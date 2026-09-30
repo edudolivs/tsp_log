@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
     auto t = chrono::duration_cast<chrono::nanoseconds>(fim - ini);
 
-    printf("%-12s %12.4lf %12.0lf\n", name.c_str(), t.count() / 1e9, s.cost);
+    printf("%-12s %12.4lf %12.1lf\n", name.c_str(), t.count() / 1e9, s.cost);
     // cout << t.count() / 1e9 << "s\t" << s.cost << endl;
     // double true_cost = 0;
     // for (int i = 0; i < n; i++) {
