@@ -1,28 +1,35 @@
 #include "Data.h"
+#include "solution.cpp"
+#include <chrono>
 #include <iostream>
 
-using namespace std;
+using std::cout;
+using std::endl;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
-    auto data = Data(argc, argv[1]);
+  for (int i = 1; i < argc; i++) {
+    auto data = Data(2, argv[i]);
     data.read();
     size_t n = data.getDimension();
+    auto c = data.getMatrixCost();
 
-    cout << "Dimension: " << n << endl;
-    cout << "DistanceMatrix: " << endl;
-    data.printMatrixDist();
-
-
-    cout << "Exemplo de Solucao s = ";
-    double cost = 0.0;
-    for (size_t i = 1; i < n; i++) {
-        cout << i << " -> ";
-        cost += data.getDistance(i, i+1);
+    cout << data.getInstanceName() << ":\t\t";
+    if (n >= 100) {
+      cout << "TOO BIG" << endl;
+      continue;
     }
-    cost += data.getDistance(n, 1);
-    cout << n << " -> " << 1 << endl;
-    cout << "Custo de S: " << cost << endl;
 
-    return 0;
+    auto ini = chrono::high_resolution_clock::now();
+
+    Solution s = ILS(10, 10, c, n);
+
+    auto fim = chrono::high_resolution_clock::now();
+
+    auto t = chrono::duration_cast<chrono::nanoseconds>(fim - ini);
+
+    cout << t.count() << "ns\t\t" << s.cost << endl;
+  }
+
+  return 0;
 }
