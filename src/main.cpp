@@ -15,9 +15,12 @@ int main(int argc, char **argv) {
     data.read();
     size_t n = data.getDimension();
 
-    if (n > 100) {
-      continue;
-    }
+    int maxIter = 50;
+    int maxIterIls;
+    if (n >= 150)
+      maxIterIls = n / 2;
+    else
+      maxIterIls = n;
 
     auto c = data.getMatrixCost();
 
@@ -36,7 +39,7 @@ int main(int argc, char **argv) {
 
     auto ini = chrono::high_resolution_clock::now();
 
-    Solution s = ILS(25, 25, c, n);
+    Solution s = ILS(maxIter, maxIterIls, c, n);
 
     auto fim = chrono::high_resolution_clock::now();
 
