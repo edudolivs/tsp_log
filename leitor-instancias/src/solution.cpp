@@ -1,18 +1,9 @@
+#include "solution.hpp"
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
 #include <vector>
 using std::vector;
-
-typedef struct {
-  vector<int> sequence;
-  double cost;
-} Solution;
-
-typedef struct {
-  int noInserido;
-  int arestaRemovida;
-  double custo;
-} IsertionInfo;
 
 vector<IsertionInfo> calcularCustoInsercao(Solution &s, const vector<int> &CL,
                                            double **c) {
@@ -53,14 +44,13 @@ vector<int> escolherSemRepeticao(int n, int q) {
 vector<int> escolher3NosAleatorios(int n) {
   vector<int> escolhidos = escolherSemRepeticao(n, 3);
   escolhidos.reserve(n);
-  for (int x : escolhidos)
-    x++;
   return escolhidos;
 }
 
 vector<int> nosRestantes(int n, const vector<int> &escolhidos) {
-  vector<int> restantes(n - 3);
-  for (int i = 1; i <= n; i++) {
+  vector<int> restantes;
+  restantes.reserve(n - 3);
+  for (int i = 0; i < n; i++) {
     if (i != escolhidos[0] && i != escolhidos[1] && i != escolhidos[2]) {
       restantes.push_back(i);
     }
@@ -70,18 +60,24 @@ vector<int> nosRestantes(int n, const vector<int> &escolhidos) {
 }
 
 void ordenarEmOrdemCrescente(vector<IsertionInfo> &custoInsercao) {
-  auto cmp = [](const auto &c1, const auto &c2) { return c1.cost < c2.cost; };
+  auto cmp = [](const auto &c1, const auto &c2) { return c1.custo < c2.custo; };
   sort(custoInsercao.begin(), custoInsercao.end(), cmp);
 }
 
 void inserirNaSolucao(Solution &s, const IsertionInfo &info) {
   s.sequence.insert(s.sequence.begin() + info.arestaRemovida + 1,
                     info.noInserido);
+  s.cost += info.custo;
 }
 
 Solution Construcao(int n, double **c) {
   Solution s;
+  s.cost = 0;
   s.sequence = escolher3NosAleatorios(n);
+  s.sequence.push_back(s.sequence[0]);
+  for (int i = 0; i < 3; i++) {
+    s.cost += c[s.sequence[i]][s.sequence[i + 1]];
+  }
   vector<int> CL = nosRestantes(n, s.sequence);
   while (!CL.empty()) {
     vector<IsertionInfo> custoInsercao = calcularCustoInsercao(s, CL, c);
@@ -128,6 +124,7 @@ bool bestImprovementSwap(Solution *s, double **c) {
 }
 
 bool bestImprovement2Opt(Solution *s, double **c) {
+  static int v = 0;
   double bestDelta = -1e-7;
   int best_i = -1, best_j = -1;
 
@@ -138,7 +135,7 @@ bool bestImprovement2Opt(Solution *s, double **c) {
       int vj = s->sequence[j];
       int vj_next = s->sequence[j + 1];
       double delta =
-          (c[vi][vj_next] - c[vj][vj_next] + c[vi_prev][vj] - c[vi_prev][vi]);
+          (c[vi_prev][vj] + c[vi][vj_next] - c[vi_prev][vi] - c[vj][vj_next]);
       if (delta < bestDelta) {
         bestDelta = delta;
         best_i = i;

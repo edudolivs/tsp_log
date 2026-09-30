@@ -6,7 +6,7 @@ CPPC = g++
 #############################
 
 #### opcoes de compilacao e includes
-CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++0x
+CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++17
 CONCERTINCDIR = $(CONCERTDIR)/include
 CCFLAGS = $(CCOPT)
 #############################
@@ -48,7 +48,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 #delete objetos e arquivos de dependencia
 clean:
 	@echo "\033[31mcleaning obj directory \033[0m"
-	@rm tsp -f $(OBJDIR)/*.o $(OBJDIR)/*.d
+	@rm -f tsp $(OBJDIR)/*.o $(OBJDIR)/*.d
 
 
 rebuild: clean tsp
