@@ -1,10 +1,6 @@
 #include "Data.h"
 #include "solution.hpp"
 #include <chrono>
-// #include <iostream>
-
-// using std::cout;
-// using std::endl;
 
 int main(int argc, char **argv) {
 
@@ -24,28 +20,27 @@ int main(int argc, char **argv) {
 
     auto c = data.getMatrixCost();
 
-    // c = (double **)realloc(c, (n + 1) * sizeof(double *));
-    // for (int i = n; i > 0; i--) {
-    //   c[i - 1] = (double *)realloc(c[i - 1], (n + 1) * sizeof(double));
-    //   c[i] = c[i - 1];
-    //   for (int j = n; j > 0; j--) {
-    //     c[i][j] = c[i][j - 1];
-    //   }
-    //   c[i][0] = (double)NULL;
-    // }
-    // c[0] = (double *)NULL;
-
     string name = data.getInstanceName();
 
-    auto ini = chrono::high_resolution_clock::now();
+    double total_time = 0;
+    double total_cost = 0;
 
-    Solution s = ILS(maxIter, maxIterIls, c, n);
+    for (int j = 0; j < 10; j++) {
+      auto ini = chrono::high_resolution_clock::now();
 
-    auto fim = chrono::high_resolution_clock::now();
+      Solution s = ILS(maxIter, maxIterIls, c, n);
 
-    auto t = chrono::duration_cast<chrono::nanoseconds>(fim - ini);
+      auto fim = chrono::high_resolution_clock::now();
 
-    printf("%-12s %12.4lf %12.1lf\n", name.c_str(), t.count() / 1e9, s.cost);
+      auto t = chrono::duration_cast<chrono::nanoseconds>(fim - ini);
+      total_time += t.count() * 1e-9;
+      total_cost += s.cost;
+    }
+    total_time /= 10;
+    total_cost /= 10;
+
+    printf("%-12s %12.4lf %12.1lf\n", name.c_str(), total_time, total_cost);
+    fprintf(stderr, "%-12s%02d/%02d done\n", name.c_str(), i, argc - 1);
     // cout << t.count() / 1e9 << "s\t" << s.cost << endl;
     // double true_cost = 0;
     // for (int i = 0; i < n; i++) {
