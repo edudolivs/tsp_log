@@ -1,0 +1,1 @@
+../instances/st70.tsp

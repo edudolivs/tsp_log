@@ -1,10 +1,8 @@
-#include "solution.hpp"
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
+#include "tspils.h"
 #include <vector>
 using std::vector;
 
+namespace {
 vector<IsertionInfo> calcularCustoInsercao(Solution &s, const vector<int> &CL,
                                            double **c) {
   vector<IsertionInfo> custoInsercao =
@@ -164,7 +162,7 @@ bool bestImprovementOrOpt(Solution *s, double **c, int length) {
     int vf_next = s->sequence[i + length];
 
     for (int j = 0; j < s->sequence.size() - 1; j++) {
-      if ((j >= i - 1 && j < i + length) || j == i - 2 || j == i + length)
+      if (j >= i - 2 && j <= i + length)
         continue;
       int vj_prev = s->sequence[j];
       int vj_next = s->sequence[j + 1];
@@ -259,6 +257,7 @@ Solution Perturbacao(Solution s, double **c, int n) {
 
   return s;
 }
+} // namespace
 
 Solution ILS(int maxIter, int maxIterIls, double **c, int n) {
   Solution bestOfAll;
